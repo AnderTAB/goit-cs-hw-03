@@ -53,14 +53,21 @@ group by status.name;
 
 --Отримати завдання, які призначені користувачам з певною доменною частиною електронної пошти. Використайте SELECT з умовою 
 --LIKE в поєднанні з JOIN, щоб вибрати завдання, призначені користувачам, чия електронна пошта містить певний домен (наприклад, '%@example.com').
-
+select  users.fullname, tasks.title, tasks.description, users.email  from tasks LEFT JOIN users
+on tasks.user_id=users.id
+where email like '%example.com';
 
 --Отримати список завдань, що не мають опису. Виберіть завдання, у яких відсутній опис.
-
+select * from tasks 
+WHERE COALESCE(tasks.status_id, NULL) IS NULL;
 
 --Вибрати користувачів та їхні завдання, які є у статусі 'in progress'. Використайте INNER JOIN для отримання списку користувачів та їхніх 
 --завдань із певним статусом.
-
+select  users.fullname, tasks.title, tasks.description, tasks.status_id from tasks inner JOIN users
+on tasks.user_id=users.id
+where tasks.status_id = 2;
 
 --Отримати користувачів та кількість їхніх завдань. Використайте LEFT JOIN та GROUP BY для вибору користувачів та підрахунку їхніх завдань.
-
+select  users.fullname, count(*)  from tasks LEFT JOIN users
+on tasks.user_id=users.id
+group by users.fullname;
