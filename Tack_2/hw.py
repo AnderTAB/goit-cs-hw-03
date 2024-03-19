@@ -36,13 +36,17 @@ def create(name, age, features):
     }
     return db.cats.insert_one(cat)
 
+def update(pk, name, age, feature):
+    new_cat = {
+        "name": name,
+        "age": age,
+        "feature": feature
+    }
+    return db.cats.update_one({"_id": ObjectId(pk)}, {"$set": new_cat})
 
-def update():
-    pass
 
-
-def delete():
-    pass
+def delete(pk):
+    return db.cats.delete_one({"_id": ObjectId(pk)})
 
 if __name__ == "__main__":
     match action:
