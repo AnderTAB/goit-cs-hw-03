@@ -12,7 +12,7 @@ db=client.mds
 
 parser = argparse.ArgumentParser(description="Application cats")
 
-parser.add_argument("--action", help = "create, update, read, delete, read_by_name")
+parser.add_argument("--action", help = "create, update, read, delete, read_by_name, add_feature_by_name, delete_all")
 parser.add_argument("--id", help = "id")
 parser.add_argument("--name", help = "name")
 parser.add_argument("--age", help = "age")
@@ -42,21 +42,27 @@ def create():
 
 
 def update():
-    pk = input("Enter id: ")   
+
     name = input("Enter name: ")
     age = input("Enter age: ")
     feature = input("Enter feature: ")
     new_cat = {
-        "name": name,
+
         "age": age,
         "feature": feature
     }
-    return db.cats.update_one({"_id": ObjectId(pk)}, {"$set": new_cat})
+    return db.cats.update_one({"name": name}, {"$set": new_cat})
 
+def delete_by_name():
+    name = input("Enter name: ")
+    return db.cats.delete_one({"name": name})
 
-def delete():
-    pk = input("Enter id: ")
-    return db.cats.delete_one({"_id": ObjectId(pk)})
+def delete_all():
+    confirmation = input("Are you sure you want to delete all records? (yes/no): ")
+    if confirmation.lower() == "yes":
+        return db.cats.delete_many({})
+    else:
+        print("Deletion cancelled.")
 
 def read_by_name():
     name = input("Enter name: ")
@@ -64,7 +70,12 @@ def read_by_name():
     if docum is not None:
         return docum
     else:
-        print("not exist cat")
+        print("Cat not exist ")
+
+def add_feature_by_name():
+    name = input("Enter name: ")
+    feature = input("Enter new feature: ")
+    return db.cats.update_one({"name": name}, {"$push": {"features": feature}})
 
 if __name__ == "__main__":
     match action:
@@ -85,10 +96,18 @@ if __name__ == "__main__":
             print(result)
 
         case "delete":
-            result = delete()
+            result = delete_by_name()
             print(result)
+
+        case "delete_all":
+            result = delete_all()
+            print(result)
+
+        case "add_feature":
+            result = add_feature_by_name()
+            print(result)
+
         case _:
             print("Unknown action")
 
-        # case "exit":
-        #     break
+

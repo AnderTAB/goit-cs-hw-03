@@ -3,9 +3,9 @@ select * from tasks
 where user_id = 10;
 
 --Вибрати завдання за певним статусом. Використайте підзапит для вибору завдань з конкретним статусом, наприклад, 'new'.
-select fullname
-FROM users
-WHERE id NOT IN (SELECT user_id FROM tasks);
+select tasks.title from tasks LEFT JOIN status
+on TASKS.status_id=status.id  
+where status.name = 'new';
 
 --Оновити статус конкретного завдання. Змініть статус конкретного завдання на 'in progress' або інший статус.
 update tasks
@@ -15,10 +15,9 @@ where id =1
 select * from tasks;
 
 --Отримати список користувачів, які не мають жодного завдання. Використайте комбінацію SELECT, WHERE NOT IN і підзапит.
-select users.fullname, tasks.status_id  from tasks full join users
-on tasks.user_id=users.id
---where tasks.status_id not in (1, 2, 3); пробував варіант, але він в мене не працював, приийшов до такого варіанту
-WHERE COALESCE(tasks.status_id, NULL) IS NULL;
+select fullname
+FROM users
+WHERE id NOT IN (SELECT user_id FROM tasks);
 
 --Додати нове завдання для конкретного користувача. Використайте INSERT для додавання нового завдання.
 insert into tasks (id, title, description, status_id, user_id)
